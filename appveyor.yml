@@ -1,0 +1,37 @@
+clone_depth: 1
+
+init:
+
+environment:
+  emacs_deps: emacs-25-i686-deps.zip
+  emacs_zip: emacs-25.1.90-i686.zip
+  matrix:
+    - PYTHON: "C:\\Python27"
+
+install:
+  - cinst make
+  - cinst curl -y
+  - curl -fsSL http://alpha.gnu.org/gnu/emacs/pretest/windows/%emacs_deps% -o %emacs_deps%
+  - curl -fsSL http://alpha.gnu.org/gnu/emacs/pretest/windows/%emacs_zip% -o %emacs_zip%
+  - 7z x %emacs_deps% -o"emacs_deps"
+  - 7z x %emacs_zip% -o"emacs_zip"
+  - set PATH=%APPVEYOR_BUILD_FOLDER%\emacs_zip\bin;%PATH%
+  - set PATH=%PYTHON%;%PATH%
+  - ps: Copy-Item  emacs_deps\bin\* emacs_zip\bin
+  # - git clone https://github.com/cask/cask.git
+  # - curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python
+  - set PATH=%APPVEYOR_BUILD_FOLDER%\.cask\bin;%PATH%
+  - set PATH=%APPVEYOR_BUILD_FOLDER%\cask\bin;%PATH%
+
+build_script:
+  - where cask
+  - cd %APPVEYOR_BUILD_FOLDER% & make install
+  # - C:\msys64\usr\bin\bash -l -c "cd ${APPVEYOR_BUILD_FOLDER} && echo $PATH"
+  # - C:\msys64\usr\bin\bash -l -c "cd ${APPVEYOR_BUILD_FOLDER} && make install EMACS=./emacs_zip/bin/emacs.exe CASK=C:/Users/appveyor/.cask/bin/cask"
+  # - C:\msys64\usr\bin\bash -l -c "cd ${APPVEYOR_BUILD_FOLDER} && ls .cask/25.1/elpa"
+  # - C:\msys64\usr\bin\bash -l -c "cd ${APPVEYOR_BUILD_FOLDER} && /c/Users/appveyor/.cask/bin/cask path"
+  # - C:\msys64\usr\bin\bash -l -c "cd ${APPVEYOR_BUILD_FOLDER} && pwd && ls /c/Users/appveyor/.cask/bin"
+  # - C:\msys64\usr\bin\bash -l -c "cd ${APPVEYOR_BUILD_FOLDER} && make test EMACS=./emacs_zip/bin/emacs.exe"
+  # - C:\msys64\usr\bin\bash -l -c "cd ${APPVEYOR_BUILD_FOLDER} && make test EMACS=./emacs_zip/bin/emacs.exe CASK=C:/Users/appveyor/.cask/bin/cask"
+
+test_script:

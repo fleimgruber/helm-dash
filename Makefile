@@ -9,6 +9,9 @@ test: clean-elc
 	${MAKE} unit
 	${MAKE} clean-elc
 
+install:
+	$(CASK) install --dev
+
 unit:
 	${CASK} exec ert-runner
 
